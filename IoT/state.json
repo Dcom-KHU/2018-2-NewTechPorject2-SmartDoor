@@ -1,0 +1,8 @@
+{
+	"state":{
+		"reported":{
+			"doorid": "testID", 
+			"location": "lab316"
+		}
+	}
+}
