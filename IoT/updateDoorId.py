@@ -4,17 +4,6 @@ import time
 import datetime
 import json
 
-# Shadow JSON schema:
-#
-# Name: Bot
-# {
-#	"state": {
-#		"desired":{
-#			"property":<INT VALUE>
-#		}
-#	}
-# }
-
 def updateCallback(payload, responseStatus, token):
     # payload is a JSON string ready to be parsed using json.loads(...)
     # in both Py2.x and Py3.x
@@ -40,14 +29,17 @@ def deleteCallback(payload, responseStatus, token):
     if responseStatus == "rejected":
         print("Delete request " + token + " rejected!")
 
-
-endpoint = "a3cfl7aqjid92n-ats.iot.ap-northeast-2.amazonaws.com"
-rootCA = "keys/AmazonRootCA1.pem"
-cert = "keys/18499b1b60-certificate.pem.crt"
-key = "keys/18499b1b60-private.pem.key"
-port = 8883
-clientId = "iottest"
-thingName = "test"
+# read config
+with open('config.json') as f:
+    conf = json.load(f)
+    
+    endpoint = conf['endpoint']
+    rootCA = conf['rootCA']
+    cert = conf['cert']
+    key = conf['key']
+    port = int(conf['port'])
+    clientId = conf['clientId']
+    thingName = conf['thingName']
 
 # logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")

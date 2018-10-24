@@ -1,0 +1,9 @@
+{
+	"endpoint": "a3cfl7aqjid92n-ats.iot.ap-northeast-2.amazonaws.com",
+	"rootCA" : "keys/AmazonRootCA1.pem",
+	"cert" : "keys/18499b1b60-certificate.pem.crt",
+	"key": "keys/18499b1b60-private.pem.key",
+	"port": "8883",
+	"clientId": "iottest",
+	"thingName": "test"
+}
