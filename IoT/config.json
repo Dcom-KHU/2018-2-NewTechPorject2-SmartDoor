@@ -4,6 +4,6 @@
 	"cert" : "keys/18499b1b60-certificate.pem.crt",
 	"key": "keys/18499b1b60-private.pem.key",
 	"port": "8883",
-	"clientId": "iottest",
+	"clientID": "basic_test",
 	"thingName": "test"
 }
