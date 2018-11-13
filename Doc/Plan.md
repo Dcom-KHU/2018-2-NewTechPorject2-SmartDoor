@@ -23,3 +23,6 @@
 - [ ] AWS DynamoDB에 사용자 등록
 - [ ] AWS DynamoDB에 Device 등록
 - [ ] AWS DynamoDB에 사용자와 Device 연결
+
+## etc
+- [ ] 집 내, 외부 구별에 따른 
