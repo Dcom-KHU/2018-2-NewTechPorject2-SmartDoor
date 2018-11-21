@@ -6,3 +6,6 @@ application of android
 
 ## IoT
 raspberry pi code
+```
+pip install -r requirements.txt
+```
