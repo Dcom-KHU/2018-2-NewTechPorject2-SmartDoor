@@ -4,46 +4,7 @@ import time
 import datetime
 import json
 from pprint import pprint 
-
-class CallbackHandler:
-    def __init__(self, deviceShadowInstance):
-        self.deviceShadowInstance = deviceShadowInstance 
-
-    def updateCallback(self, payload, responseStatus, token):
-        if responseStatus == "timeout":
-            print("Update request " + token + " time out!")
-        if responseStatus == "accepted":
-            payloadDict = json.loads(payload)
-            print("~~~~~~~~~~~~~~~~~~~~~~~")
-            print("Update request with token: " + token + " accepted!")
-            pprint(json.loads(payload))
-            print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
-        if responseStatus == "rejected":
-            print("Update request " + token + " rejected!")
-
-    def deleteCallback(self, payload, responseStatus, token):
-        if responseStatus == "timeout":
-            print("Delete request " + token + " time out!")
-        if responseStatus == "accepted":
-            print("~~~~~~~~~~~~~~~~~~~~~~~")
-            print("Delete request with token: " + token + " accepted!")
-            print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
-        if responseStatus == "rejected":
-            print("Delete request " + token + " rejected!")
-
-    def deltaCallback(self, payload, responseStatus, token):
-        print("~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Delta request ")
-        print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
-
-        # update state
-        pprint(payload)
-        payload = json.loads(payload)
-        new_state = payload['state']['state']
-        new_id = payload['state']['doorid']
-        # state update
-        JSONPayload = json.dumps({"state":{"reported":{"state":new_state, "doorid":new_id}}})
-        self.deviceShadowInstance.shadowUpdate(JSONPayload, self.updateCallback, 5)
+from ShadowCallbackHandler import CallbackHandler
 
 def buildMQTTShadowClient(configFile):
     # read config
@@ -51,7 +12,7 @@ def buildMQTTShadowClient(configFile):
         conf = json.load(f)
 
     # init shadow client
-    client = AWSIoTMQTTShadowClient(conf['clientID'])
+    client = AWSIoTMQTTShadowClient(conf['thingName']+'_shadow')
     client.configureEndpoint(conf['endpoint'], int(conf['port']))
     client.configureCredentials(conf['rootCA'], conf['key'], conf['cert'])
 
@@ -62,7 +23,6 @@ def buildMQTTShadowClient(configFile):
 
     return client, conf
 
-
 def request_id(deviceShadowHandler, handler):
 
         # init state
@@ -70,7 +30,7 @@ def request_id(deviceShadowHandler, handler):
         JSONPayload = json.dumps({"state":{"desired":{"state":"RequestNewID"}, "reported":{"state":"RequestNewID"}}})
         deviceShadowHandler.shadowUpdate(JSONPayload, handler.updateCallback, 5)
 
-
+# update Door id with shadow
 def main():
     client, conf = buildMQTTShadowClient('config.json') 
 
