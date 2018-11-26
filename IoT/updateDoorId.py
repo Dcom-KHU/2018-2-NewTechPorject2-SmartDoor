@@ -37,12 +37,13 @@ class CallbackHandler:
         print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
 
         # update state
+        pprint(payload)
         payload = json.loads(payload)
         new_state = payload['state']['state']
         new_id = payload['state']['doorid']
         # state update
-        JSONPayload = json.dumps({"state":{"desired":None, "reported":{"state":new_state, "doorid":new_id}}})
-        self.deviceShadowInstance.shadowUpdate(JSONPayload, handler.updateCallback, 5)
+        JSONPayload = json.dumps({"state":{"reported":{"state":new_state, "doorid":new_id}}})
+        self.deviceShadowInstance.shadowUpdate(JSONPayload, self.updateCallback, 5)
 
 def buildMQTTShadowClient(configFile):
     # read config
@@ -61,6 +62,15 @@ def buildMQTTShadowClient(configFile):
 
     return client, conf
 
+
+def request_id(deviceShadowHandler, handler):
+
+        # init state
+        # Request new door id
+        JSONPayload = json.dumps({"state":{"desired":{"state":"RequestNewID"}, "reported":{"state":"RequestNewID"}}})
+        deviceShadowHandler.shadowUpdate(JSONPayload, handler.updateCallback, 5)
+
+
 def main():
     client, conf = buildMQTTShadowClient('config.json') 
 
@@ -76,15 +86,16 @@ def main():
 
     # Register shadow delta callback
     deviceShadowHandler.shadowRegisterDeltaCallback(handler.deltaCallback)
+    
+    request_id(deviceShadowHandler, handler)
 
-    # init state
-    # Request new door id
-    JSONPayload = json.dumps({"state":{"desired":{"state":"RequestNewID"}, "reported":{"state":"RequestNewID"}}})
-    deviceShadowHandler.shadowUpdate(JSONPayload, handler.updateCallback, 5)
-
+    i = 0
     # loop
     while True:
+       i+=1
        time.sleep(1)
+       if i % 10 == 0:
+           request_id(deviceShadowHandler, handler)
 
 
 if __name__ == '__main__':
