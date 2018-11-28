@@ -4,8 +4,6 @@ import time
 import argparse
 import json
 
-AllowedActions = ['both', 'publish', 'subscribe']
-
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
     print("Received a new message: ")
@@ -13,6 +11,15 @@ def customCallback(client, userdata, message):
     print("from topic: ")
     print(message.topic)
     print("--------------\n\n")
+
+
+def openAcceptCallback(client, userdata, message):
+    print("Received a open accept")
+    
+    customCallback(client, userdata, message)
+
+    # do open door
+
 
 def buildMQTTClient(configFile):
     # read config
@@ -34,12 +41,7 @@ def buildMQTTClient(configFile):
     return client, conf
 
 
-def main():
-    client, conf = buildMQTTClient('config.json')
-
-    # open topic
-    topic = 'smartdoor/'+ conf['thingName'] +'/open'
-
+def setLogger():
     # Configure logging
     logger = logging.getLogger("AWSIoTPythonSDK.core")
     logger.setLevel(logging.DEBUG)
@@ -48,22 +50,57 @@ def main():
     streamHandler.setFormatter(formatter)
     logger.addHandler(streamHandler)
 
-    # Connect and subscribe to AWS IoT
-    client.connect()
+
+def subscribeOpen(client, topic):
 
     # subscribe topic
     client.subscribe(topic, 1, customCallback)
+    client.subscribe(topic+'/accept', 1, openAcceptCallback)
+    client.subscribe(topic+'/reject', 1, customCallback)
     time.sleep(2)
 
+
+def publishOpen(client, topic):
     # Publish to the same topic 
     message = {}
-    message['message'] = 'open'
+    message['thingName'] = 'open'
+    message['requestId'] = 'testid'
+    message['userId'] = 'User1'
     messageJson = json.dumps(message)
     client.publish(topic, messageJson, 1)
-    # if args.mode == 'publish':
+
     print('Published topic %s: %s\n' % (topic, messageJson))
-    time.sleep(5)
+
+
+def main():
+    setLogger()
+
+    # Connect and subscribe to AWS IoT
+    client, conf = buildMQTTClient('config.json')
+    client.connect()
+
+    # open topic
+    topic = 'smartdoor/'+ conf['thingName'] +'/open'
+
+    subscribeOpen(client, topic)
+
+    return client, topic
+
+def test():
+    client, topic = main()
+
+    i = 0
+    while True:
+        i+=1
+        if i % 10 == 0:
+            publishOpen(client, topic)
+        time.sleep(1)
 
 
 if __name__ == "__main__":
-    main()
+    istest = True
+    
+    if istest == True:
+        test()
+    else:
+        main()
