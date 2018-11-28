@@ -1,8 +1,8 @@
 {
 	"endpoint": "a3cfl7aqjid92n-ats.iot.ap-northeast-2.amazonaws.com",
 	"rootCA" : "keys/AmazonRootCA1.pem",
-	"cert" : "keys/a53a260511-certificate.pem.crt",
-	"key": "keys/a53a260511-private.pem.key",
+	"cert" : "keys/b46062d18e-certificate.pem.crt",
+	"key": "keys/b46062d18e-private.pem.key",
 	"port": "8883",
 	"thingName": "test"
 }

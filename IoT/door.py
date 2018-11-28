@@ -3,6 +3,7 @@ import logging
 import time
 import argparse
 import json
+import actuator
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
@@ -12,13 +13,12 @@ def customCallback(client, userdata, message):
     print(message.topic)
     print("--------------\n\n")
 
-
-def openAcceptCallback(client, userdata, message):
-    print("Received a open accept")
-    
-    customCallback(client, userdata, message)
-
-    # do open door
+    if message.topic.split('/')[-1] == 'accept':
+        print('======accept======')
+        actuator.setAngle(10)
+        actuator.setAngle(0)
+    elif message.topic.split('/')[-1] == 'reject':
+        print('======reject======')
 
 
 def buildMQTTClient(configFile):
@@ -55,17 +55,13 @@ def subscribeOpen(client, topic):
 
     # subscribe topic
     client.subscribe(topic, 1, customCallback)
-    client.subscribe(topic+'/accept', 1, openAcceptCallback)
+    client.subscribe(topic+'/accept', 1, customCallback)
     client.subscribe(topic+'/reject', 1, customCallback)
     time.sleep(2)
 
 
-def publishOpen(client, topic):
+def publishOpen(client, topic, message):
     # Publish to the same topic 
-    message = {}
-    message['thingName'] = 'open'
-    message['requestId'] = 'testid'
-    message['userId'] = 'User1'
     messageJson = json.dumps(message)
     client.publish(topic, messageJson, 1)
 
@@ -93,7 +89,11 @@ def test():
     while True:
         i+=1
         if i % 10 == 0:
-            publishOpen(client, topic)
+            message = {'userId': 'User2'}
+            publishOpen(client, topic, message)
+        if (i+11) % 20 == 0:
+            message = {'userId': 'User1'}
+            publishOpen(client, topic, message)
         time.sleep(1)
 
 
