@@ -5,6 +5,8 @@ import argparse
 import json
 import actuator
 
+p = actuator.init()
+
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
     print("Received a new message: ")
@@ -15,8 +17,10 @@ def customCallback(client, userdata, message):
 
     if message.topic.split('/')[-1] == 'accept':
         print('======accept======')
-        actuator.setAngle(10)
-        actuator.setAngle(0)
+        global p
+        actuator.setAngle(p, 2.5)
+        actuator.setAngle(p, 12.5)
+        actuator.setAngle(p, 2.5)
     elif message.topic.split('/')[-1] == 'reject':
         print('======reject======')
 
@@ -87,13 +91,13 @@ def test():
 
     i = 0
     while True:
-        i+=1
         if i % 10 == 0:
-            message = {'userId': 'User2'}
-            publishOpen(client, topic, message)
-        if (i+11) % 20 == 0:
             message = {'userId': 'User1'}
             publishOpen(client, topic, message)
+        if (i+11) % 20 == 0:
+            message = {'userId': 'User2'}
+            publishOpen(client, topic, message)
+        i+=1
         time.sleep(1)
 
 
