@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.admin.bea"
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -26,4 +26,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'org.altbeacon:android-beacon-library:2.13.1'
+
+    //AWS Mobile SDK for Android
+    implementation 'com.amazonaws:aws-android-sdk-core:2.6.+'
+    implementation 'com.amazonaws:aws-android-sdk-auth-core:2.6.+@aar'
+    implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.6.+@aar'
+    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.6.+'
+    implementation 'com.amazonaws:aws-android-sdk-pinpoint:2.6.+'
+
 }
