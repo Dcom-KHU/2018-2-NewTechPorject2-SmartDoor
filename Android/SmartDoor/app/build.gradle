@@ -26,12 +26,15 @@ dependencies {
     implementation "com.android.support:multidex:1.0.3"
 
     // AWS Mobile SDK for Android
-    def aws_version = '2.6.27'
+    def aws_version = '2.8.5'
     implementation "com.amazonaws:aws-android-sdk-core:$aws_version"
     implementation "com.amazonaws:aws-android-sdk-auth-core:$aws_version@aar"
     implementation "com.amazonaws:aws-android-sdk-auth-ui:$aws_version@aar"
     implementation "com.amazonaws:aws-android-sdk-auth-userpools:$aws_version@aar"
     implementation "com.amazonaws:aws-android-sdk-cognitoidentityprovider:$aws_version"
+    implementation "com.amazonaws:aws-android-sdk-apigateway-core:$aws_version"
+
+    implementation "com.google.code.gson:gson:2.8.2"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
