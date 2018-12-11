@@ -13,7 +13,6 @@ import com.d.smartdoor.smartdoor.Injection;
 public class AWSService {
     private AWSConfiguration awsConfiguration;
     private IdentityManager identityManager;
-    private AWSCredentialsProvider credentialsProvider;
     private ApiClientFactory factory;
 
     public AWSService(Context context) {
@@ -21,9 +20,7 @@ public class AWSService {
         identityManager = new IdentityManager(context, awsConfiguration);
         identityManager.addSignInProvider(CognitoUserPoolsSignInProvider.class);
         IdentityManager.setDefaultIdentityManager(identityManager);
-        credentialsProvider = identityManager.getCredentialsProvider();
         factory = new ApiClientFactory();
-        factory.credentialsProvider(credentialsProvider);
     }
 
     public IdentityManager getIdentityManager() {
@@ -32,10 +29,6 @@ public class AWSService {
 
     public AWSConfiguration getConfiguration() {
         return awsConfiguration;
-    }
-
-    public AWSCredentialsProvider getCredentialsProvider() {
-        return credentialsProvider;
     }
 
     public ApiClientFactory getApiClientFactory() {

@@ -2,13 +2,12 @@ package com.d.smartdoor.smartdoor.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.ResultReceiver;
-import android.service.media.MediaBrowserService;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.mobileconnectors.apigateway.ApiRequest;
@@ -16,12 +15,12 @@ import com.amazonaws.mobileconnectors.apigateway.ApiResponse;
 import com.d.smartdoor.smartdoor.Injection;
 import com.d.smartdoor.smartdoor.R;
 
-import javax.xml.transform.Result;
-
 import smartdoor.SmartDoorClient;
-import smartdoor.model.Empty;
 
 public class MainActivity extends AppCompatActivity {
+
+    TextView textView;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button openButton = findViewById(R.id.openButton);
+        textView = findViewById(R.id.textView);
+        progressBar = findViewById(R.id.progressBar);
 
         openButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,31 +42,43 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-}
 
-class RunApi extends AsyncTask<String, Void, String> {
-    @Override
-    protected String doInBackground(String... voids) {
-        SmartDoorClient client = Injection.getSmartDoorService().getSmartDoorClient();
+    class RunApi extends AsyncTask<String, Void, ApiResponse> {
 
-        ApiRequest request = new ApiRequest("doors");
-        request.withHttpMethod(HttpMethodName.GET);
-        ApiResponse response = null;
+        SmartDoorClient client;
 
-        try {
-            response = client.execute(request);
-            Log.d("POST", response.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        @Override
+        protected void onPreExecute() {
+            client = Injection.getSmartDoorService().getSmartDoorClient();
+            progressBar.setVisibility(View.VISIBLE);
+            textView.setText("Requested.");
         }
 
-        String message = "";
-        if (response == null) {
-            message = "Error";
-        } else {
-            message = "Opened";
+        @Override
+        protected ApiResponse doInBackground(String... params) {
+
+            ApiRequest request = new ApiRequest("/doors");
+            request.withHttpMethod(HttpMethodName.GET);
+            ApiResponse response = null;
+
+            try {
+                response = client.execute(request);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
         }
-        Log.d("API", message);
-        return message;
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+
+        }
+
+        @Override
+        protected void onPostExecute(ApiResponse apiResponse) {
+            progressBar.setVisibility(View.GONE);
+            textView.setText(apiResponse.getStatusText());
+        }
     }
 }
+

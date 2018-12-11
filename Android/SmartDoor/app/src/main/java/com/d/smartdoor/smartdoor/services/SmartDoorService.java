@@ -14,6 +14,7 @@ public class SmartDoorService {
 
     public SmartDoorService(Context context) {
         ApiClientFactory factory = Injection.getAWSService().getApiClientFactory();
+        factory.credentialsProvider(Injection.getAWSService().getIdentityManager().getCredentialsProvider());
         client = factory.build(SmartDoorClient.class);
     }
 
