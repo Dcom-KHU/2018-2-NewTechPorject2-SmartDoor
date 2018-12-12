@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.auth.core.DefaultSignInResultHandler;
@@ -29,6 +30,8 @@ public class AuthenticatorActivity extends AppCompatActivity{
                 Toast.makeText(AuthenticatorActivity.this,
                         String.format("Logged in as %s", identityManager.getCachedUserID()),
                         Toast.LENGTH_LONG).show();
+                Log.d("login key", identityProvider.getCognitoLoginKey());
+
                 // Go to the main activity
                 final Intent intent = new Intent(activity, MainActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

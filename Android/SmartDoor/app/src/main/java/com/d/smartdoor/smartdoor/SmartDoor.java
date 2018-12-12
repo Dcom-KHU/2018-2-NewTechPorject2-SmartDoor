@@ -1,5 +1,7 @@
 package com.d.smartdoor.smartdoor;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 
 public class SmartDoor extends MultiDexApplication {
@@ -12,4 +14,3 @@ public class SmartDoor extends MultiDexApplication {
         Injection.initialize(getApplicationContext());
     }
 }
-

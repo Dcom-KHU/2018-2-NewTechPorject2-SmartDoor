@@ -33,6 +33,7 @@ dependencies {
     implementation "com.amazonaws:aws-android-sdk-auth-userpools:$aws_version@aar"
     implementation "com.amazonaws:aws-android-sdk-cognitoidentityprovider:$aws_version"
     implementation "com.amazonaws:aws-android-sdk-apigateway-core:$aws_version"
+    implementation "com.amazonaws:aws-android-sdk-mobile-client:$aws_version@aar"
 
     implementation "com.google.code.gson:gson:2.8.2"
 
